@@ -20,13 +20,14 @@ import org.pircbotx.hooks.events.MessageEvent;
 
 @SuppressWarnings("rawtypes")
 public class Bot extends ListenerAdapter {
-    public static List<String> owners = new ArrayList<String>();
     public static PircBotX bot;
     public static String prefix = "$";
+    public static String curcmd;
+    public static List<String> SpamMessages = new ArrayList<String>();
+    public static List<String> owners = new ArrayList<String>();
     public static List<String> ignored = new ArrayList<String>();
     public static List<String> users = new ArrayList<String>();
     public static HashMap<String, Integer> violation = new HashMap<String, Integer>();
-    public static String curcmd;
     public static HashMap<String, String> relay = new HashMap<String, String>(0);
 
     public static void main(String[] args) {
@@ -72,13 +73,19 @@ public class Bot extends ListenerAdapter {
         }
     }
 
+    public void checkSpam(MessageEvent event) {
+        
+        SpamMessages.add(event.Message);
+           
+    }
+    
     @Override
     public void onMessage(MessageEvent event) {
         String command = CheckCommand(event);
         curcmd = command;
         String title;
         if (!event.getChannel().isOp(event.getUser()) && !event.getChannel().hasVoice(event.getUser())) {
-            //checkSpam(event);
+            checkSpam(event);
         }
         if (ignored.contains(event.getUser().getHostmask())) {
             return;
